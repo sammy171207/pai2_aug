@@ -1,14 +1,35 @@
-// User Model:
-// username: String, required, unique.
-// email: String, required, unique, must be a valid email format.
-// password: String, required. Must be hashed using bcryptjs before being saved.
-// role: String, with an enum of ['User', 'Moderator'], and a default value of 'User'.
+
 const mongoose=require('mongoose');
-const userScheme=new mongoose.Schema({
-    name:{type:String,unique:true,required:true},
-    email:{type:String,unique:true},
-    password:{type:String,required:true},
-    role:{type:String,enum:['moderate','user'],default:'user'}
-})
-const User=new mongoose.model("User",userScheme)
+const bcryptjs=require('bcryptjs');
+
+const userSchema=new mongoose.Schema({
+    username:{type:String,unique:true,required:true,trim:true},
+    email:{
+        type:String,
+        required:true,
+        unique:true,
+        trim:true,
+        lowercase:true,
+        match:[/^[^\s@]+@[^\s@]+\.[^\s@]+$/, 'Please provide a valid email']
+    },
+    password:{type:String,required:true,minlength:6},
+    role:{type:String,enum:['User','Moderator'],default:'User'}
+},{timestamps:true});
+
+
+userSchema.pre('save', async function(next){
+    if(!this.isModified('password')) 
+        return next();
+    try {
+        const salt=await bcryptjs.genSalt(10);
+
+        this.password=await bcryptjs.hash(this.password,salt);
+
+        next();
+    } catch(err){
+        next(err);
+    }
+});
+
+const User=mongoose.model('User',userSchema);
 module.exports=User;

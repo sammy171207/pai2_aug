@@ -1,6 +1,6 @@
 const express=require('express');
 const router=express.Router();
-const { getStats, getTopActiveUsers, getMostUpvotedPosts } = require('../controller/analyticsController');
+
 const { authenticate, authorizeRole } = require('../middlwares/auth');
 //only moderator can see 
 router.get('/stats', authenticate, authorizeRole('Moderator'), getStats);

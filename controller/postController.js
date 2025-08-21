@@ -6,15 +6,15 @@ exports.createPost=async(req,res)=>{
     try{
         const {title,content,tags}=req.body;
         if(!title || !content){
-            return res.status(400).json({message:'title and content are required'});
+            return res.status(400).json({message:'title and contentrequired'});
         }
         const trimmedTitle = String(title).trim();
         const trimmedContent = String(content).trim();
         if(trimmedTitle.length < 5){
-            return res.status(400).json({message:'title must be at least 5 characters'});
+            return res.status(400).json({message:'title must be at characters'});
         }
         if(trimmedContent.length < 20){
-            return res.status(400).json({message:'content must be at least 20 characters'});
+            return res.status(400).json({message:'content st 20 characters'});
         }
 
         let tagIds = [];
@@ -130,7 +130,6 @@ exports.postComment=async(req,res)=>{
     }
 }
 
-// Update a comment (owner or Moderator)
 exports.updateComment=async(req,res)=>{
     try{
         const { text }=req.body;
